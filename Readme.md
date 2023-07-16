@@ -24,7 +24,7 @@ Follow these steps to reproduce the results:
 1. Clone this repository to your local machine:
 
 ```bash
-git clone [repository_url]
+git clone https://github.com/yeyeleijun/Land_WorkingMemory.git
 ```
 
 2. Download the dataset from [https://core-nets.org](https://core-nets.org), place it in the specified directory and preprocessing (Optional).
@@ -39,6 +39,14 @@ git clone [repository_url]
 
 If you use this code or replicate the results of the paper, please cite the original paper:  
 
+``` bash
+@article{Ye2022,
+  title={Quantifying the attractor landscape and transition path of distributed working memory from large-scale brain network},
+  author={Ye, Leijun and Li, Chunhe},
+  journal={arXiv preprint arXiv:2209.05002},
+  year={2022}
+}
+```
 
 ## Contact  
 
