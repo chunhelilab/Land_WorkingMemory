@@ -132,7 +132,7 @@ for i = 1 : 1 : nAttractor
     end_attractor = [end_attractor, temp];
 end
 
-parfor i = 1 : num_path
+parfor i = 1 : num_path  % this parfor loop requires about 2.5h to finish when using 6 cores
     Spot1 = start_attractor(i); % Initial point
     Spot2 = end_attractor(i); % End point
     init = mu([Spot1, Spot2], :)';
@@ -158,26 +158,21 @@ end
 
 % plot discrete path
 figure(4);
-population_idx = repelem({' Pop A', ' Pop B', ' Pop C'}, area_num);
-show_top = 90;
-
-for plot_idx = 1 : 2
-%     [B, I] = maxk(abs(eigVector(:, plot_idx)), show_top);
-    [B, I] = maxk(eigVector(:, plot_idx), show_top);
-    subplot(1, 2, plot_idx)
-    path_temp = ycell{2}(I, :);  % MA to MB
-    image(path_temp, 'CDataMapping', 'scaled')
-    load('./utils/coolwarm_cmap.mat')
-    colormap(coolwarm_cmap)
-    y_tick_label = [];
-    for k = 1 : show_top
-        y_tick_label = [y_tick_label, strcat(area_name{I(k)-floor((I(k)-1)/area_num)*area_num}, population_idx(I(k)))];
-    end
-    set(gca, 'YTick',[1 : show_top], 'YTickLabel',  y_tick_label, 'XTick',[1 : 6: params.N+1], 'XTickLabel', [0 : params.TMax/params.N*6 : params.TMax], 'fontsize', 7);
-    title(['Eigenvector ', num2str(plot_idx)], 'fontsize', 12);
-    xlabel('Time', 'fontsize', 12);
-    colorbar();
+population_idx = repelem({' A', ' B', ' C'}, area_num);
+path_temp = ycell{2}; % MA to MB
+image(path_temp', 'CDataMapping', 'scaled')
+box off
+load('./utils/coolwarm_cmap.mat')
+colormap(coolwarm_cmap)
+x_tick_label = [];
+for k = 1 : 90
+    x_tick_label = [x_tick_label, strcat(area_name{k-floor((k-1)/area_num)*area_num}, population_idx(k))];
 end
+set(gca, 'XTick', [1 : 90], 'XTickLabel',  x_tick_label, 'YTick', [1 : 6 : params.N+1], 'YTickLabel', [0 : params.TMax/params.N*6 : params.TMax], 'fontsize', 7);
+xtickangle(90)
+xlabel('Brain areas', 'fontsize', 14);
+ylabel('Time', 'fontsize', 14);
+colorbar();
 
 
 % Calculate the paths after dimension reduction
@@ -219,18 +214,18 @@ for i = 1 : floor(size(pca1,2)/20)
 end
 
 % Plot the paths
-% for i = 2
-%     for j = 1
-%         temp = find((start_attractor == i) & (end_attractor == j));
-%         z3path = griddata(pca1, pca2, U, path_pca{temp}(1,:), path_pca{temp}(2,:));
-%         plot3(path_pca{temp}(1,:), path_pca{temp}(2,:), z3path+7, 'w', 'LineWidth', 2);
-%         
-%         temp = find((start_attractor == j) & (end_attractor == i));
-%         z3path = griddata(pca1, pca2, U, path_pca{temp}(1,:), path_pca{temp}(2,:));
-%         plot3(path_pca{temp}(1,:), path_pca{temp}(2,:), z3path+7, 'Color', [0.85,0.43,0.83], 'LineWidth',2);
-%     end
-% end
-% view([-25 75])
+for i = 2
+    for j = 1
+        temp = find((start_attractor == i) & (end_attractor == j));
+        z3path = griddata(pca1, pca2, U, path_pca{temp}(1,:), path_pca{temp}(2,:));
+        plot3(path_pca{temp}(1,:), path_pca{temp}(2,:), z3path+7, 'w', 'LineWidth', 2);
+        
+        temp = find((start_attractor == j) & (end_attractor == i));
+        z3path = griddata(pca1, pca2, U, path_pca{temp}(1,:), path_pca{temp}(2,:));
+        plot3(path_pca{temp}(1,:), path_pca{temp}(2,:), z3path+7, 'Color', [0.85,0.43,0.83], 'LineWidth',2);
+    end
+end
+view([-25 75])
 set(gcf,'outerposition', [100 100 800 650]);
 
 % find minimum and saddle point of U
